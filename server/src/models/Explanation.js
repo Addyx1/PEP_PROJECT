@@ -47,6 +47,6 @@ const ExplanationSchema = new mongoose.Schema({
 
 // Advanced logic for dashboard queries (aggregation friendly)
 ExplanationSchema.index({ createdAt: -1, status: 1 });
-ExplanationSchema.index({ title: 'text', originalCode: 'text' });
+ExplanationSchema.index({ title: 'text', originalCode: 'text' }, { language_override: 'dummy' });
 
 module.exports = mongoose.model('Explanation', ExplanationSchema);

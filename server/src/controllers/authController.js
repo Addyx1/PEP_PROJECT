@@ -16,8 +16,11 @@ exports.register = async (req, res) => {
         const { name, password } = req.body;
         const email = req.body.email ? req.body.email.toLowerCase().trim() : '';
 
+        console.log('Registration attempt:', { name, email, hasPassword: !!password });
+
         // MOCK RESPONSE IF MONGODB IS DISABLED
         if (process.env.SKIP_MONGODB === 'true') {
+            console.log('Running in mock mode (SKIP_MONGODB=true)');
             const mockUserId = 'mock-user-' + Date.now();
             return res.status(201).json({
                 success: true,
@@ -34,6 +37,7 @@ exports.register = async (req, res) => {
         // Check if user exists
         const userExists = await User.findOne({ email });
         if (userExists) {
+            console.log('Registration failed: User already exists');
             return res.status(400).json({ success: false, message: 'User already exists' });
         }
 
@@ -43,6 +47,8 @@ exports.register = async (req, res) => {
             email,
             password,
         });
+
+        console.log('User registered successfully:', user._id);
 
         res.status(201).json({
             success: true,
@@ -55,6 +61,7 @@ exports.register = async (req, res) => {
             }
         });
     } catch (error) {
+        console.error('Registration error:', error);
         res.status(500).json({ success: false, message: error.message });
     }
 };
